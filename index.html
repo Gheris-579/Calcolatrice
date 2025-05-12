@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatrice Semplice</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .calculator {
+            background-color: #333;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .display {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 15px;
+            font-size: 24px;
+            text-align: right;
+            border: none;
+            background-color: #444;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #555;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #777;
+        }
+
+        .operator {
+            background-color: #ff9800;
+        }
+
+        .operator:hover {
+            background-color: #f57c00;
+        }
+
+        .equal {
+            grid-column: span 2;
+            background-color: #4caf50;
+        }
+
+        .equal:hover {
+            background-color: #43a047;
+        }
+
+        .clear {
+            background-color: #f44336;
+        }
+
+        .clear:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" class="display" value="0" readonly>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button onclick="deleteLast()">DEL</button>
+            <button class="operator" onclick="appendOperator('/')">/</button>
+            <button class="operator" onclick="appendOperator('*')">*</button>
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentInput = '';
+        let operator = null;
+        let firstOperand = null;
+
+        function appendNumber(number) {
+            if (currentInput === '0' && number !== '.') {
+                currentInput = number;
+            } else {
+                currentInput += number;
+            }
+            display.value = currentInput;
+        }
+
+        function appendOperator(op) {
+            if (currentInput === '' && firstOperand === null) return;
+
+            if (firstOperand !== null) {
+                calculate();
+            }
+
+            firstOperand = parseFloat(display.value);
+            operator = op;
+            currentInput = '';
+        }
+
+        function calculate() {
+            if (operator === null || firstOperand === null || currentInput === '') return;
+
+            let secondOperand = parseFloat(currentInput);
+            let result;
+
+            switch (operator) {
+                case '+':
+                    result = firstOperand + secondOperand;
+                    break;
+                case '-':
+                    result = firstOperand - secondOperand;
+                    break;
+                case '*':
+                    result = firstOperand * secondOperand;
+                    break;
+                case '/':
+                    if (secondOperand === 0) {
+                        result = 'Errore!';
+                    } else {
+                        result = firstOperand / secondOperand;
+                    }
+                    break;
+                default:
+                    return;
+            }
+
+            display.value = result;
+            currentInput = String(result);
+            operator = null;
+            firstOperand = null;
+        }
+
+        function clearDisplay() {
+            currentInput = '';
+            operator = null;
+            firstOperand = null;
+            display.value = '0';
+        }
+
+        function deleteLast() {
+            currentInput = currentInput.slice(0, -1);
+            display.value = currentInput === '' ? '0' : currentInput;
+        }
+    </script>
+</body>
+</html>
